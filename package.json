@@ -1,0 +1,52 @@
+{
+  "name": "joi-router",
+  "version": "0.0.1",
+  "description": "Input & Output validated routing for Express",
+  "main": "joi-router.js",
+  "scripts": {
+    "test": "npm run test-cov && mocha test",
+    "commitmsg": "validate-commit-msg"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunkuo/joi-router.git"
+  },
+  "keywords": [
+    "joi-router",
+    "express",
+    "joi"
+  ],
+  "author": "sunkuo <sunkuo@chuxin.ren>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sunkuo/joi-router/issues"
+  },
+  "homepage": "https://github.com/sunkuo/joi-router#readme",
+  "devDependencies": {
+    "cz-conventional-changelog": "^2.0.0",
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.13.3",
+    "power-assert": "^1.4.2",
+    "supertest": "^3.0.0",
+    "validate-commit-msg": "^2.12.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    },
+    "validate-commit-msg": {}
+  },
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "flatten": "^1.0.2",
+    "joi": "^10.4.1",
+    "methods": "^1.1.2",
+    "only": "^0.0.2"
+  }
+}
