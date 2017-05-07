@@ -5,83 +5,33 @@ const methods = require('methods')
 const Joi = require('joi')
 const only = require('only')
 const {Route} = require('express')
-const Layer = require('express/lib/router/layer.js')
 const {json, raw, text, urlencoded} = require('body-parser')
 
+const supportedLocations = ['body', 'query', 'params', 'headers', 'output', 'type', 'failure']
+
 // For each verb, check validation schema. If exists, handle it
-methods.forEach(function (method) {
+methods.concat('all').forEach(function (method) {
+  const origin = Route.prototype[method]
   Route.prototype[method] = function () {
     let handles = flatten(Array.prototype.slice.call(arguments))
-    // If validation schema exist, add validate handlers
-    if (typeof handles[0] === 'object') {
-      debug('handle validation schema')
-      const supportedLocations = ['body', 'query', 'params', 'headers', 'output', 'type', 'failure']
-      const schema = Object.assign({
-        type: 'json',
-        failure: 400
-      }, only(handles[0], supportedLocations))
-      const offset = 1
-      handles = Array.prototype.slice.call(handles, offset)
-      handleValidation(this, schema, handles)
-    }
-    for (var i = 0; i < handles.length; i++) {
-      var handle = handles[i]
-
-      if (typeof handle !== 'function') {
-        var type = toString.call(handle)
-        var msg = 'Route.' + method + '() requires callback functions but got a ' + type
-        throw new Error(msg)
+    handles.forEach(function (handle, index) {
+      debug(`handles index ${index}`)
+      if (typeof handle === 'object') {
+        debug('handle validation schema')
+        const schema = Object.assign({
+          type: 'json',
+          failure: 400
+        }, only(handle, supportedLocations))
+        handleValidation(this, schema, handles, index)
       }
-
-      debug('%s %o', method, this.path)
-
-      var layer = Layer('/', {}, handle)
-      layer.method = method
-
-      this.methods[method] = true
-      this.stack.push(layer)
-    }
-
-    return this
+    })
+    console.log(handles)
+    return origin.apply(this, handles)
   }
 })
 
-// For each verb, check validation schema. If exists, handle it
-Route.prototype.all = function () {
-  let handles = flatten(Array.prototype.slice.call(arguments))
-  // If validation schema exist, add validate handlers
-  if (typeof handles[0] === 'object') {
-    debug('handle validation schema')
-    const supportedLocations = ['body', 'query', 'params', 'headers', 'output', 'type', 'failure']
-    const schema = Object.assign({
-      type: 'json',
-      failure: 400
-    }, only(handles[0], supportedLocations))
-    const offset = 1
-    handles = Array.prototype.slice.call(handles, offset)
-    handleValidation(this, schema, handles)
-  }
-  for (var i = 0; i < handles.length; i++) {
-    var handle = handles[i]
-
-    if (typeof handle !== 'function') {
-      var type = toString.call(handle)
-      var msg = 'Route.all() requires callback functions but got a ' + type
-      throw new TypeError(msg)
-    }
-
-    var layer = Layer('/', {}, handle)
-    layer.method = undefined
-
-    this.methods._all = true
-    this.stack.push(layer)
-  }
-
-  return this
-}
-
 // add validation handle to layer stack
-const handleValidation = function (context, schema, handlers) {
+const handleValidation = function (context, schema, handlers, index) {
   checkValidation(schema)
   const bodyParserHandler = makeBodyParserHandler(schema)
   const inputValidationHandler = makeInputValidationHandler(schema)
@@ -89,7 +39,7 @@ const handleValidation = function (context, schema, handlers) {
     bodyParserHandler,
     inputValidationHandler
   ]
-  Array.prototype.splice.call(handlers, 0, 0, ...extraHandlers)
+  Array.prototype.splice.call(handlers, index, 1, extraHandlers)
 }
 
 const checkValidation = function (schema) {

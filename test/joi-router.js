@@ -119,4 +119,42 @@ describe('Input validation', function () {
       .expect(200, 'Lorem 10 sunkuo', done)
     })
   })
+
+  describe('multiple validation schema part should work', function () {
+    it('validation schema aside another validation schema should work', function (done) {
+      const app = express()
+      app.post('/tobi', {query: {
+        userId: Joi.string().alphanum().min(3).max(30).required()
+      }}, {body: {
+        content: Joi.string().alphanum().min(3).max(30).required()
+      }}, (req, res, next) => {
+        res.end('success')
+      })
+      request(app)
+      .post('/tobi')
+      .set('Content-Type', 'application/json')
+      .query('userId=133')
+      .send(JSON.stringify({content: 'Lorem'}))
+      .expect(200, 'success', done)
+    })
+
+    it('validation schema away from another validation schema should work', function (done) {
+      const app = express()
+      app.post('/tobi', {query: {
+        userId: Joi.string().alphanum().min(3).max(30).required()
+      }}, (req, res, next) => {
+        next()
+      }, {body: {
+        content: Joi.string().alphanum().min(3).max(30).required()
+      }}, (req, res, next) => {
+        res.end('success')
+      })
+      request(app)
+      .post('/tobi')
+      .set('Content-Type', 'application/json')
+      .query('userId=133')
+      .send(JSON.stringify({content: 'Lorem'}))
+      .expect(200, 'success', done)
+    })
+  })
 })
