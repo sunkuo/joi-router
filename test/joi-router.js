@@ -158,3 +158,52 @@ describe('Input validation', function () {
     })
   })
 })
+
+describe('Output validation', function () {
+  it('should success with rigte output body', function (done) {
+    const app = express()
+    app.post('/tobi', {output: {
+      '200': {
+        body: {
+          userId: Joi.string().alphanum().min(3).max(30).required()
+        }
+      }
+    }}, (req, res, next) => {
+      res._body = {
+        userId: '123'
+      }
+      next()
+    })
+    app.use(function (req, res, next) {
+      res.json(res._body)
+    })
+    request(app)
+    .post('/tobi')
+    .set('Content-Type', 'application/json')
+    .send(JSON.stringify({}))
+    .expect(200, {userId: '123'}, done)
+  })
+  it('should fail with wrong output body', function (done) {
+    const app = express()
+    app.post('/tobi', {output: {
+      '200': {
+        body: {
+          userId: Joi.string().alphanum().min(3).max(30).required()
+        }
+      }
+    }}, (req, res, next) => {
+      res._body = {
+        userId: '1'
+      }
+      next()
+    })
+    app.use(function (req, res, next) {
+      res.json(res._data)
+    })
+    request(app)
+    .post('/tobi')
+    .set('Content-Type', 'application/json')
+    .send(JSON.stringify({}))
+    .expect(500, done)
+  })
+})

@@ -1,4 +1,5 @@
 const assert = require('power-assert')
+const {ServerResponse} = require('http')
 const debug = require('debug')('joi-router')
 const flatten = require('flatten')
 const methods = require('methods')
@@ -6,6 +7,7 @@ const Joi = require('joi')
 const only = require('only')
 const {Route} = require('express')
 const {json, raw, text, urlencoded} = require('body-parser')
+const OutputValidation = require('./lib/output-validation.js')
 
 const supportedLocations = ['body', 'query', 'params', 'headers', 'output', 'type', 'failure']
 
@@ -25,7 +27,6 @@ methods.concat('all').forEach(function (method) {
         handleValidation(this, schema, handles, index)
       }
     })
-    console.log(handles)
     return origin.apply(this, handles)
   }
 })
@@ -40,6 +41,10 @@ const handleValidation = function (context, schema, handlers, index) {
     inputValidationHandler
   ]
   Array.prototype.splice.call(handlers, index, 1, extraHandlers)
+  if (schema.output) {
+    const outputValidationHandler = makeOutputValidationHandler(schema)
+    handlers.push(outputValidationHandler)
+  }
 }
 
 const checkValidation = function (schema) {
@@ -82,6 +87,24 @@ const makeInputValidationHandler = function (schema) {
       }
     }
     next()
+  }
+}
+
+const makeOutputValidationHandler = function (schema) {
+  const outputValidation = new OutputValidation(schema.output)
+  return function (req, res, next) {
+    debug('start validate output. status code is %s', res.statusCode)
+    const error = outputValidation.validate(res.statusCode, {}, res._body)
+    if (error) {
+      debug('output validation fail')
+      res.status(error.status || 500)
+      return res.json({
+        error: error.toString()
+      })
+    } else {
+      debug('output validation success')
+      next()
+    }
   }
 }
 
