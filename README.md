@@ -3,9 +3,9 @@
 
 ## Todo List
 - :white_check_mark: Input Validated Routing
-- :ballot_box_with_check: Output Validated Routing
-- :ballot_box_with_check: Examples to show how to use joi-router
-- :ballot_box_with_check: Self-contained Test
+- :white_check_mark: Output Validated Routing
+- :white_check_mark: Examples to show how to use joi-router
+- :white_check_mark: Self-contained Test
 - :ballot_box_with_check: Continuous integration
 - :ballot_box_with_check: Code coverage
 - :ballot_box_with_check: Joi-router to documents
@@ -21,12 +21,28 @@ const Joi = require('joi')
 require('joi-router')
 const app = express()
 
-app.get('/foo', {
+// Input Validaiton
+app.get('/foo', {query: {
   userId: Joi.string().alphanum().min(3).max(30).required()
-}, function (req, res, next) {
+}}, function (req, res, next) {
   res.json({
     result: 'success'
   })
+})
+
+// Output Validation
+app.get('/foo', {output: {
+  '200': {
+    body: {
+      content: Joi.string().alphanum().min(3).max(30).required()
+    }
+  }
+}}, function (req, res, next) {
+  res._data = {content: 'Lorem'}
+  next()
+})
+app.use((req, res, next) => {
+  res.json({res._data})
 })
 
 app.listen(3000, () => {
@@ -36,7 +52,7 @@ app.listen(3000, () => {
 
 ## Node compatibility
 
-NodeJS `>= 5.0` is required.
+NodeJS `>= 6.0` is required.
 
 ## LICENSE
 
