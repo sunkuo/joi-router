@@ -5,7 +5,7 @@ const methods = require('methods')
 const Joi = require('joi')
 const only = require('only')
 const {Route} = require('express')
-const {json, raw, text, urlencoded} = require('body-parser')
+const {json, urlencoded} = require('body-parser')
 const OutputValidation = require('./lib/output-validation.js')
 
 const supportedLocations = ['body', 'query', 'params', 'headers', 'output', 'type', 'failure']
@@ -57,10 +57,6 @@ const makeBodyParserHandler = function (schema) {
     switch (schema.type) {
       case 'json':
         return json()
-      case 'raw':
-        return raw()
-      case 'text':
-        return text()
       case 'urlencoded':
         return urlencoded()
     }

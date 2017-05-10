@@ -27,6 +27,16 @@ describe('match should work', function () {
     const outputValidationRule = new OutputValidationRule('200-300', {})
     assert(outputValidationRule.match(200) && outputValidationRule.match(201) && outputValidationRule.match(300), 'status code not match')
   })
+  it('combined match should work with right code', function () {
+    const outputValidationRule = new OutputValidationRule('200-300,201-301', {})
+    assert(outputValidationRule.match(200) && outputValidationRule.match(201) && outputValidationRule.match(300) && outputValidationRule.match(301), 'status code not match')
+  })
+  it('combined match should work with right code', function () {
+    const outputValidationRule = new OutputValidationRule('200-300,201-301', {})
+    assert.throws(() => {
+      assert(outputValidationRule.match(302) || outputValidationRule.match(199), 'status code not match')
+    }, 'status code not match')
+  })
 })
 
 describe('validate should work', function () {

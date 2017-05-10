@@ -1,16 +1,15 @@
 const express = require('express')
 const request = require('supertest')
+const querystring = require('querystring')
 const Joi = require('joi')
 require('../')
 
 describe('Input validation', function () {
   it('should work well without validation', function (done) {
     const app = express()
-
     app.get('/tobi', function (req, res) {
       res.end('deleted tobi!')
     })
-
     request(app)
     .get('/tobi')
     .expect(200, 'deleted tobi!', done)
@@ -91,6 +90,40 @@ describe('Input validation', function () {
       .post('/tobi')
       .set('Content-Type', 'application/json')
       .send(JSON.stringify({userId: 'sunkuo'}))
+      .expect(200, 'sunkuo', done)
+    })
+
+    it('request should fail with wrong body in format application/x-www-form-urlencoded', function (done) {
+      const app = express()
+      app.post('/tobi', {
+        body: {
+          userId: Joi.string().alphanum().min(3).max(30).required()
+        },
+        type: 'urlencoded'
+      }, (req, res, next) => {
+        res.end('success')
+      })
+      request(app)
+      .post('/tobi')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send(querystring.stringify({}))
+      .expect(400, done)
+    })
+
+    it('request should work with right body in format application/x-www-form-urlencoded', function (done) {
+      const app = express()
+      app.post('/tobi', {
+        body: {
+          userId: Joi.string().alphanum().min(3).max(30).required()
+        },
+        type: 'urlencoded'
+      }, (req, res, next) => {
+        res.end(req.body.userId)
+      })
+      request(app)
+      .post('/tobi')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send(querystring.stringify({userId: 'sunkuo'}))
       .expect(200, 'sunkuo', done)
     })
   })
