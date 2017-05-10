@@ -1,6 +1,8 @@
 # joi-router
 :basketball: Input &amp; Output validated routing for Express
 
+[![Build Status](https://travis-ci.org/sunkuo/joi-router.svg?branch=master)](https://travis-ci.org/sunkuo/joi-router)[![Coverage Status](https://coveralls.io/repos/github/sunkuo/joi-router/badge.svg?branch=master)](https://coveralls.io/github/sunkuo/joi-router?branch=master)
+
 ## Todo List
 - :white_check_mark: Input Validated Routing
 - :white_check_mark: Output Validated Routing
