@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+echo
+DB_LATENCY=$1 node $2 &
+pid=$!
+
+sleep 2
+
+wrk 'http://localhost:8000/foo' \
+  -d 3 \
+  -c 50 \
+  -t 8 \
+  | grep 'Requests/sec' \
+  
+
+
+kill $pid
