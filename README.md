@@ -33,16 +33,12 @@ app.get('/foo', {query: {
 // Output Validation
 app.get('/foo', {output: {
   '200': {
-    body: {
-      content: Joi.string().alphanum().min(3).max(30).required()
-    }
+    content: Joi.string().alphanum().min(3).max(30).required()
   }
 }}, function (req, res, next) {
-  res._data = {content: 'Lorem'}
-  next()
-})
-app.use((req, res, next) => {
-  res.json({res._data})
+  res.json({
+    content: 'Lorem'
+  })
 })
 
 app.listen(3000, () => {
