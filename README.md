@@ -54,6 +54,10 @@ app.listen(3000, () => {
 
 NodeJS `>= 6.0` is required.
 
+## Performance
+
+Joi-router only run once to add validation middleware when express start, so it does not make express slow.
+
 ## LICENSE
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
