@@ -40,11 +40,10 @@ const handleValidation = function (context, schema, handlers, index) {
     bodyParserHandler,
     inputValidationHandler
   ]
-  Array.prototype.splice.call(handlers, index, 1, extraHandlers)
   if (schema.output) {
-    const outputValidationHandler = makeOutputValidationHandler(schema)
-    handlers.push(outputValidationHandler)
+    extraHandlers.push(makeOutputValidationHandler(schema))
   }
+  Array.prototype.splice.call(handlers, index, 1, extraHandlers)
 }
 
 const checkValidation = function (schema) {
@@ -94,17 +93,20 @@ const makeOutputValidationHandler = function (schema) {
   const outputValidation = new OutputValidation(schema.output)
   return function (req, res, next) {
     debug('start validate output. status code is %s', res.statusCode)
-    const error = outputValidation.validate(res.statusCode, {}, res._body)
-    if (error) {
-      debug('output validation fail')
-      res.status(error.status || 500)
-      return res.json({
-        error: error.toString()
-      })
-    } else {
+    const origin = res.json
+    res.json = function () {
+      const error = outputValidation.validate(res.statusCode, {}, res._body)
+      if (error) {
+        debug('output validation fail')
+        return origin.call(res.status(500), {
+          error: error,
+          message: 'output validation failed'
+        })
+      }
       debug('output validation success')
-      next()
+      return origin.apply(this, Array.from(arguments))
     }
+    next()
   }
 }
 
