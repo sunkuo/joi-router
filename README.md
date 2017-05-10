@@ -8,8 +8,8 @@
 - :white_check_mark: Output Validated Routing
 - :white_check_mark: Examples to show how to use joi-router
 - :white_check_mark: Self-contained Test
-- :ballot_box_with_check: Continuous integration
-- :ballot_box_with_check: Code coverage
+- :white_check_mark: Continuous integration
+- :white_check_mark: Code coverage
 - :ballot_box_with_check: Joi-router to documents
 
 ## How to install
