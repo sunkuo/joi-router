@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run test-cov && mocha test",
     "commitmsg": "validate-commit-msg",
-    "coverage": "istanbul cover _mocha -- -R spec",
+    "coverage": "node_modules/.bin/istanbul cover _mocha -- -R spec",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
   },
   "repository": {
@@ -34,6 +34,8 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.13.3",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.3.0",
     "power-assert": "^1.4.2",
     "supertest": "^3.0.0",
     "validate-commit-msg": "^2.12.1"
