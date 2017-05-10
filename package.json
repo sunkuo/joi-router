@@ -5,7 +5,9 @@
   "main": "joi-router.js",
   "scripts": {
     "test": "npm run test-cov && mocha test",
-    "commitmsg": "validate-commit-msg"
+    "commitmsg": "validate-commit-msg",
+    "coverage": "istanbul cover _mocha -- -R spec",
+    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,7 @@
   },
   "homepage": "https://github.com/sunkuo/joi-router#readme",
   "devDependencies": {
+    "coveralls": "^2.13.1",
     "cz-conventional-changelog": "^2.0.0",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
