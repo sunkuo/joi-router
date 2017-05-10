@@ -227,4 +227,40 @@ describe('Output validation', function () {
     .send(JSON.stringify({}))
     .expect(500, done)
   })
+  it('should support multiple output schema', function (done) {
+    const app = express()
+    app.post('/tobi', {output: {
+      '200': [{
+        userId: Joi.string().alphanum().min(3).max(30).required()
+      }, {
+        content: Joi.string().alphanum().min(3).max(30).required()
+      }]
+    }}, (req, res, next) => {
+      res.json({
+        userId: '123'
+      })
+    })
+    app.post('/tobi/content', {output: {
+      '200': [{
+        userId: Joi.string().alphanum().min(3).max(30).required()
+      }, {
+        content: Joi.string().alphanum().min(3).max(30).required()
+      }]
+    }}, (req, res, next) => {
+      res.json({
+        content: '123'
+      })
+    })
+    request(app)
+    .post('/tobi')
+    .set('Content-Type', 'application/json')
+    .send(JSON.stringify({}))
+    .expect(200, {userId: '123'}, () => {
+      request(app)
+      .post('/tobi/content')
+      .set('Content-Type', 'application/json')
+      .send(JSON.stringify({}))
+      .expect(200, {content: '123'}, done)
+    })
+  })
 })
