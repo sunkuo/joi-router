@@ -169,13 +169,9 @@ describe('Output validation', function () {
         }
       }
     }}, (req, res, next) => {
-      res._body = {
+      res.json({
         userId: '123'
-      }
-      next()
-    })
-    app.use(function (req, res, next) {
-      res.json(res._body)
+      })
     })
     request(app)
     .post('/tobi')
@@ -192,13 +188,9 @@ describe('Output validation', function () {
         }
       }
     }}, (req, res, next) => {
-      res._body = {
+      res.json({
         userId: '1'
-      }
-      next()
-    })
-    app.use(function (req, res, next) {
-      res.json(res._data)
+      })
     })
     request(app)
     .post('/tobi')

@@ -1,5 +1,4 @@
 const assert = require('power-assert')
-const {ServerResponse} = require('http')
 const debug = require('debug')('joi-router')
 const flatten = require('flatten')
 const methods = require('methods')
@@ -95,7 +94,8 @@ const makeOutputValidationHandler = function (schema) {
     debug('start validate output. status code is %s', res.statusCode)
     const origin = res.json
     res.json = function () {
-      const error = outputValidation.validate(res.statusCode, {}, res._body)
+      assert(arguments.length === 1 && typeof arguments[0] === 'object')
+      const error = outputValidation.validate(res.statusCode, {}, arguments[0])
       if (error) {
         debug('output validation fail')
         return origin.call(res.status(500), {
