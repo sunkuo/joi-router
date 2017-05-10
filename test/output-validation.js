@@ -7,7 +7,7 @@ describe('status code overlap is not allowed', function () {
     const outputValidation = new OutputValidation({
       '200': {body: {content: Joi.string().alphanum().min(3).max(30).required()}},
       '300-400': {body: {}},
-      '500': {header: {}}
+      '500': {body: {}}
     })
     assert(outputValidation)
   })
@@ -16,7 +16,7 @@ describe('status code overlap is not allowed', function () {
       const outputValidation = new OutputValidation({
         '200': {body: {content: Joi.string().alphanum().min(3).max(30).required()}},
         '300-500': {body: {}},
-        '500': {header: {}}
+        '500': {body: {}}
       })
       assert(outputValidation)
     })
@@ -26,22 +26,22 @@ describe('status code overlap is not allowed', function () {
 describe('validate should work', function () {
   it('success with right output', function () {
     const outputValidation = new OutputValidation({
-      '200': {body: {content: Joi.string().alphanum().min(3).max(30).required()}},
-      '300-400': {body: {userId: Joi.string().alphanum().min(3).max(30).required()}},
-      '500': {header: {limit: Joi.number().integer().min(0).max(50).required()}}
+      '200': {content: Joi.string().alphanum().min(3).max(30).required()},
+      '300-400': {userId: Joi.string().alphanum().min(3).max(30).required()},
+      '500': {limit: Joi.number().integer().min(0).max(50).required()}
     })
-    assert(!outputValidation.validate(200, undefined, {content: 'lorem'}))
-    assert(!outputValidation.validate(300, undefined, {userId: '111'}))
-    assert(!outputValidation.validate(500, {limit: 1}, undefined))
+    assert(!outputValidation.validate(200, {content: 'lorem'}))
+    assert(!outputValidation.validate(300, {userId: '111'}))
+    assert(!outputValidation.validate(500, {limit: 1}))
   })
   it('fail with wrong output', function () {
     const outputValidation = new OutputValidation({
-      '200': {body: {content: Joi.string().alphanum().min(3).max(30).required()}},
-      '300-400': {body: {userId: Joi.string().alphanum().min(3).max(30).required()}},
-      '500': {header: {limit: Joi.number().integer().min(0).max(50).required()}}
+      '200': {content: Joi.string().alphanum().min(3).max(30).required()},
+      '300-400': {userId: Joi.string().alphanum().min(3).max(30).required()},
+      '500': {limit: Joi.number().integer().min(0).max(50).required()}
     })
-    assert(outputValidation.validate(200, undefined, {content: 'l'}))
-    assert(outputValidation.validate(300, undefined, {userId: '1'}))
-    assert(outputValidation.validate(500, {limit: 100}, undefined))
+    assert(outputValidation.validate(200, {content: 'l'}))
+    assert(outputValidation.validate(300, {userId: '1'}))
+    assert(outputValidation.validate(500, {limit: 100}))
   })
 })

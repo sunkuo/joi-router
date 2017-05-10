@@ -95,7 +95,7 @@ const makeOutputValidationHandler = function (schema) {
     const origin = res.json
     res.json = function () {
       assert(arguments.length === 1 && typeof arguments[0] === 'object')
-      const error = outputValidation.validate(res.statusCode, {}, arguments[0])
+      const error = outputValidation.validate(res.statusCode, arguments[0])
       if (error) {
         debug('output validation fail')
         return origin.call(res.status(500), {

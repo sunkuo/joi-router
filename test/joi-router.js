@@ -164,9 +164,7 @@ describe('Output validation', function () {
     const app = express()
     app.post('/tobi', {output: {
       '200': {
-        body: {
-          userId: Joi.string().alphanum().min(3).max(30).required()
-        }
+        userId: Joi.string().alphanum().min(3).max(30).required()
       }
     }}, (req, res, next) => {
       res.json({
@@ -183,9 +181,7 @@ describe('Output validation', function () {
     const app = express()
     app.post('/tobi', {output: {
       '200': {
-        body: {
-          userId: Joi.string().alphanum().min(3).max(30).required()
-        }
+        userId: Joi.string().alphanum().min(3).max(30).required()
       }
     }}, (req, res, next) => {
       res.json({
