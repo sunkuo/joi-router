@@ -1,13 +1,14 @@
 {
   "name": "joi-router",
-  "version": "0.0.1",
+  "version": "0.0.9",
   "description": "Input & Output validated routing for Express",
   "main": "joi-router.js",
   "scripts": {
     "test": "npm run test-cov && mocha test",
     "commitmsg": "validate-commit-msg",
     "coverage": "node_modules/.bin/istanbul cover _mocha -- -R spec",
-    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
+    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
+    "benchmark": "cd benchmark && make"
   },
   "repository": {
     "type": "git",
